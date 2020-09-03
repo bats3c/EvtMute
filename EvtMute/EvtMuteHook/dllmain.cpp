@@ -227,7 +227,7 @@ VOID WINAPI EtwCallbackHook( PEVENT_RECORD EventRecord )
 
 	if (!bActiveRuleChange)
 	{
-		yr_rules_scan_mem(yrRules, (uint8_t*)StringBuffer, strlen(StringBuffer), 0, ToReportOrNotToReportThatIsTheQuestion, &dwReport, 0);
+		YRRulesScanMem(yrRules, (uint8_t*)StringBuffer, strlen(StringBuffer), 0, ToReportOrNotToReportThatIsTheQuestion, &dwReport, 0);
 	}
 	else
 	{

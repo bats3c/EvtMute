@@ -13,6 +13,7 @@
 #define YRCompilerGetRules yr_compiler_get_rules
 #define YRCompilerDestroy yr_compiler_destroy
 #define YRRulesDestroy yr_rules_destroy
+#define YRRulesScanMem yr_rules_scan_mem
 
 VOID DoOriginalCallback(EVENT_RECORD *EventRecord);
 VOID WINAPI EtwCallbackHook(EVENT_RECORD *EventRecord);

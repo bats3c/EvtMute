@@ -1,0 +1,16 @@
+W:\SharpEvtMute\SharpEvtMute\bin\x64\Release\SharpEvtMute.exe.config
+W:\SharpEvtMute\SharpEvtMute\bin\x64\Release\SharpEvtMute.exe
+W:\SharpEvtMute\SharpEvtMute\bin\x64\Release\SharpEvtMute.pdb
+W:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.csprojAssemblyReference.cache
+W:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.csproj.CoreCompileInputs.cache
+W:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.exe
+W:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.pdb
+X:\SharpEvtMute\SharpEvtMute\bin\x64\Release\SharpEvtMute.exe.config
+X:\SharpEvtMute\SharpEvtMute\bin\x64\Release\SharpEvtMute.exe
+X:\SharpEvtMute\SharpEvtMute\bin\x64\Release\SharpEvtMute.pdb
+X:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.csprojAssemblyReference.cache
+X:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.csproj.CoreCompileInputs.cache
+X:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.exe
+X:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.pdb
+X:\SharpEvtMute\SharpEvtMute\bin\x64\Release\NDesk.Options.dll
+X:\SharpEvtMute\SharpEvtMute\obj\x64\Release\SharpEvtMute.csproj.CopyComplete

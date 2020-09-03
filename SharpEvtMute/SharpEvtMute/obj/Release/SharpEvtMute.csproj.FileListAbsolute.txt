@@ -1,0 +1,7 @@
+W:\SharpEvtMute\SharpEvtMute\bin\Release\SharpEvtMute.exe.config
+W:\SharpEvtMute\SharpEvtMute\bin\Release\SharpEvtMute.exe
+W:\SharpEvtMute\SharpEvtMute\bin\Release\SharpEvtMute.pdb
+W:\SharpEvtMute\SharpEvtMute\obj\Release\SharpEvtMute.csprojAssemblyReference.cache
+W:\SharpEvtMute\SharpEvtMute\obj\Release\SharpEvtMute.csproj.CoreCompileInputs.cache
+W:\SharpEvtMute\SharpEvtMute\obj\Release\SharpEvtMute.exe
+W:\SharpEvtMute\SharpEvtMute\obj\Release\SharpEvtMute.pdb
