@@ -1,0 +1,15 @@
+﻿  pch.cpp
+  dllmain.cpp
+x:\evtmute\evtmutehook\dllmain.cpp(170): error C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
+x:\evtmute\evtmutehook\dllmain.cpp(175): error C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
+x:\evtmute\evtmutehook\dllmain.cpp(183): error C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
+x:\evtmute\evtmutehook\dllmain.cpp(221): error C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
+x:\evtmute\evtmutehook\dllmain.cpp(263): warning C4101: 'oldProtect': unreferenced local variable
+x:\evtmute\evtmutehook\dllmain.cpp(260): warning C4101: 'cStringBuffer': unreferenced local variable
+x:\evtmute\evtmutehook\dllmain.cpp(263): warning C4101: 'oldOldProtect': unreferenced local variable
+x:\evtmute\evtmutehook\dllmain.cpp(362): error C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
