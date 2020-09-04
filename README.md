@@ -8,7 +8,9 @@ Grap the latest verison from [here](https://github.com/bats3c/EvtMute/releases/t
 
 #### Disabling Logging
 
-A trivial use case would be to disable event logging system wide. To do this we can use the yara rule `rule disable { condition: true }`.
+A trivial use case would be to disable event logging system wide. To do this we can use the following yara rule.
+
+    rule disable { condition: true }
 
 We will need to start by injection the hook into the event service.
 
