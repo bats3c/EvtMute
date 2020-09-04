@@ -30,7 +30,7 @@ Now all events will be dropped by the event service.
 
 Filters can be dynamically changed without having to reinject a hook. This makes it quick and easy to update the active filter.
 
-An example of a more complex filter would be this. It is capable of blocking the events related to a lsass memory dump being reported by sysmon.
+An example of a more complex filter would be this. It is capable of blocking the events related to a lsass memory dump from being reported by sysmon.
 
 ```
 rule block_lsass_dump {
