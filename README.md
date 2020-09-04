@@ -1,14 +1,14 @@
 # EvtMute
 
-This is a tool that allows you to use offensively use [YARA](http://virustotal.github.io/yara/) to apply a filter to the events being reported by windows event logging.
+This is a tool that allows you to offensively use [YARA](http://virustotal.github.io/yara/) to apply a filter to the events being reported by windows event logging.
 
 ## Usage
 
-Grap the latest verison from [here](https://github.com/bats3c/EvtMute/releases/tag/v1.0). `EvtMuteHook.dll` contains the core functionality, once it is injected it will apply a temporary filter which will allow all event to be reported, this filter can be dynamically updated without having to reinject. I've written `SharpEvtMute.exe` which is a C# assembly that can easily run via `execute` in shad0w or `execute-assembly` in cobalt strike. I will be writing a native version in C soon for much better intergration with shad0w.
+Grap the latest verison from [here](https://github.com/bats3c/EvtMute/releases/tag/v1.0). `EvtMuteHook.dll` contains the core functionality, once it is injected it will apply a temporary filter which will allow all event to be reported, this filter can be dynamically updated without having to reinject. I've written `SharpEvtMute.exe` which is a C# assembly that can easily run via `execute` in shad0w or `execute-assembly` in cobalt strike. I will be writing a native version in C for much better intergration with shad0w.
 
 #### Disabling Logging
 
-A trivial use case would be to disable logging system wide. To do this we can use the yara rule `rule disable { condition: true }`.
+A trivial use case would be to disable event logging system wide. To do this we can use the yara rule `rule disable { condition: true }`.
 
 We will need to start by injection the hook into the event service.
 
@@ -28,7 +28,7 @@ Now all events will be dropped by the event service.
 
 Filters can be dynamically changed without having to reinject a hook. This makes it quick and easy to update the active filter.
 
-An example of a more complex filter would be this. It is capable of blocking the events related to a lsass memory dump from being reported by sysmon.
+An example of a more complex filter would be this. It is capable of blocking the events related to a lsass memory dump being reported by sysmon.
 
 ```
 rule block_lsass_dump {
@@ -61,7 +61,7 @@ When injecting the hook `SharpEvtMute.exe` will call `CreateRemoteThread` and th
 
 It's pid can be found by running `SharpEvtMute.exe --Pid`. The hook can be placed by manually injecting the shellcode (run `make` in EvtMuteBin) via your C2 framework of choice, e.g `shinject` in shad0w.
 
-It is also worth mentioning that the hook will use a named pipe to update filters. The named pipe is called `EvtMuteHook_Rule_Pipe` (this named can be changed easily). There is a rule hard baked into the hook to ensure that any events including this name will be dropped automatically but it will still be an IOC having this listening so I recommend changing this it.
+It is also worth mentioning that the hook will use a named pipe to update filters. The named pipe is called `EvtMuteHook_Rule_Pipe` (this named can be changed easily). There is a rule hard baked into the hook to ensure that any events including this name will be dropped automatically but it will still be an IOC having it listening, so I recommend changing it.
 
 ## Community Filters
 
