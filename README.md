@@ -1,6 +1,6 @@
 # EvtMute
 
-This is a tool allows you to use offensively use [YARA](http://virustotal.github.io/yara/) to apply a filter to the events being reported by windows event logging.
+This is a tool that allows you to use offensively use [YARA](http://virustotal.github.io/yara/) to apply a filter to the events being reported by windows event logging.
 
 ## Usage
 
