@@ -4,7 +4,7 @@ This is a tool that allows you to offensively use [YARA](http://virustotal.githu
 
 ## Usage
 
-Grap the latest verison from [here](https://github.com/bats3c/EvtMute/releases/tag/v1.0). `EvtMuteHook.dll` contains the core functionality, once it is injected it will apply a temporary filter which will allow all event to be reported, this filter can be dynamically updated without having to reinject. I've written `SharpEvtMute.exe` which is a C# assembly that can easily run via `execute` in shad0w or `execute-assembly` in cobalt strike. I will be writing a native version in C for much better intergration with shad0w.
+Grap the latest verison from [here](https://github.com/bats3c/EvtMute/releases/tag/v1.0). `EvtMuteHook.dll` contains the core functionality, once it is injected it will apply a temporary filter which will allow all events to be reported, this filter can be dynamically updated without having to reinject. I've written `SharpEvtMute.exe` which is a C# assembly that can easily run via `execute` in shad0w or `execute-assembly` in cobalt strike. I will be writing a native version in C for much better intergration with shad0w.
 
 #### Disabling Logging
 
