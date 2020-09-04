@@ -12,7 +12,7 @@ A trivial use case would be to disable event logging system wide. To do this we 
 
     rule disable { condition: true }
 
-We will need to start by injection the hook into the event service.
+We will need to start by injecting the hook into the event service.
 
     .\SharpEvtMute.exe --Inject
 
